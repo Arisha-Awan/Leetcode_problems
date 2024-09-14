@@ -1,11 +1,11 @@
-from flask import Flask, jsonify, request, redirect, url_for,make_response,session
+from flask import Flask, jsonify, request, redirect, url_for, make_response, session
 
 # flask CORS
 from flask_cors import CORS
 
 app = Flask(__name__)
 
-app.secret_key="arisha awan key"
+app.secret_key = "arisha awan key"
 
 # this will enable flask cors for whole application
 CORS(app)
@@ -63,58 +63,66 @@ def go_to_profile(username):
     #     <p>Go to <a href="{{ url_for('profile', username1='arisha') }}">Arisha's Profile</a></p>
     # </body>
     return redirect(profile_url)
-#cookies work here
-@app.route('/set_cookie')
+
+
+# cookies work here
+@app.route("/set_cookie")
 def set_cookie():
     resp = make_response("Cookie is set")
-    resp.set_cookie('username', 'arisha', max_age=60*60*24)  # Set cookie to expire in one day
-    resp.set_cookie('email',"arisha@awan")
+    resp.set_cookie(
+        "username", "arisha", max_age=60 * 60 * 24
+    )  # Set cookie to expire in one day
+    resp.set_cookie("email", "arisha@awan")
     return resp
 
-@app.route('/get_cookie')
-def get_cookie():
-    username = request.cookies.get('username')  # Retrieve the cookie
-    email=request.cookies.get('email')
-    if username:
-        return f'Welcome back, {username} ,,{email}!'
-    else:
-        return 'No cookie found!'
 
-@app.route('/delete_cookie')
+@app.route("/get_cookie")
+def get_cookie():
+    username = request.cookies.get("username")  # Retrieve the cookie
+    email = request.cookies.get("email")
+    if username:
+        return f"Welcome back, {username} ,,{email}!"
+    else:
+        return "No cookie found!"
+
+
+@app.route("/delete_cookie")
 def delete_cookie():
     resp = make_response("Cookie has been deleted")
-    resp.delete_cookie('username')  # Delete the cookie
+    resp.delete_cookie("username")  # Delete the cookie
     return resp
 
-#sessionnnnnnnn 
-@app.route('/')
+
+# sessionnnnnnnn
+@app.route("/")
 def index():
     # Check if the user is logged in by checking the session
-    if 'username' in session:
-        username = session['username']
+    if "username" in session:
+        username = session["username"]
         return f'Logged in as {username} <br><a href="/logout">Logout</a>'
     return 'You are not logged in <br><a href="/login">Login</a>'
 
-@app.route('/login', methods=['GET', 'POST'])
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'POST':
+    if request.method == "POST":
         # Assume we have a form that submits a 'username' field
-        session['username'] = request.form['username']
-        return redirect(url_for('index'))
-    return '''
+        session["username"] = request.form["username"]
+        return redirect(url_for("index"))
+    return """
         <form method="post">
             <p><input type="text" name="username">
             <p><input type="submit" value="Login">
         </form>
-    '''
+    """
 
-@app.route('/logout')
+
+@app.route("/logout")
 def logout():
     # Remove the username from the session if it's there
-    session.pop('username', None)
-    return redirect(url_for('index'))
+    session.pop("username", None)
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
